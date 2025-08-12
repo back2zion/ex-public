@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한국도로공사 대국민서비스 아키텍처</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border: 1px solid #334155;
+        }
+        
+        .header {
+            text-align: center;
+            background: linear-gradient(45deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .quote-section {
+            background: #334155;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+            margin: 20px 0;
+            font-style: italic;
+        }
+        
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .requirement-box {
+            background: #475569;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #64748b;
+        }
+        
+        .architecture-options {
+            margin: 30px 0;
+        }
+        
+        .option {
+            background: #374151;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #4b5563;
+        }
+        
+        .option.recommended {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+        }
+        
+        .option.hybrid {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+        }
+        
+        .option.full-external {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+        }
+        
+        .stack-diagram {
+            background: #1f2937;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #374151;
+        }
+        
+        .component {
+            display: inline-block;
+            background: #4b5563;
+            padding: 12px 18px;
+            margin: 6px;
+            border-radius: 8px;
+            border: 1px solid #6b7280;
+            min-width: 140px;
+            text-align: center;
+            font-weight: bold;
+            color: #f3f4f6;
+        }
+        
+        .component.internal {
+            background: linear-gradient(135deg, #7c2d12 0%, #991b1b 100%);
+            border-color: #dc2626;
+        }
+        
+        .component.dmz {
+            background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+            border-color: #f59e0b;
+        }
+        
+        .component.external {
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            border-color: #3b82f6;
+        }
+        
+        .component.shared {
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            border-color: #10b981;
+        }
+        
+        .tier-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            display: inline-block;
+            color: #fbbf24;
+        }
+        
+        .challenges {
+            background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #dc2626;
+            margin: 20px 0;
+        }
+        
+        .benefits {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #10b981;
+            margin: 20px 0;
+        }
+        
+        .tech-considerations {
+            background: #1f2937;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #374151;
+            margin: 20px 0;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        li {
+            padding: 8px 0;
+            border-bottom: 1px solid #374151;
+        }
+        
+        li:before {
+            content: "▶ ";
+            color: #fbbf24;
+            font-weight: bold;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #fbbf24;
+        }
+        
+        .arrow {
+            text-align: center;
+            font-size: 2em;
+            color: #fbbf24;
+            margin: 15px 0;
+        }
+        
+        h3 {
+            color: #fbbf24;
+            border-bottom: 2px solid #374151;
+            padding-bottom: 8px;
+        }
+        
+        .datastreams-stack {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #10b981;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ 한국도로공사 대국민서비스 아키텍처</h1>
+            <h2>온프레미스 기반 다층 보안 설계</h2>
+            <p>기존 시스템 활용 극대화 및 권한 기반 접근 제어</p>
+        </div>
+
+        <div class="quote-section">
+            <h3>📝 핵심 요구사항 분석</h3>
+            <p><strong>"저희가 이제 하고 싶은 거는 이제 회사 내에 온프라미스를 기반으로 해서 대외 서비스를 할 수 있는 방법이나... 그러면 어떤 부분을 내놓고 어떤 부분을 안 한다든가 이런 것들을 좀 알고 싶어가지고"</strong></p>
+            
+            <p><strong>"지금 있는 스택을 가지고 이 아키텍처를 가지고 구성이 가능한가... 어떤 종류의 것들은 밖으로 빼고 어떤 종류의 것들은 그냥 있는 시스템을 활용하고"</strong></p>
+        </div>
+
+        <div class="requirements-grid">
+            <div class="requirement-box">
+                <h3>🎯 확실한 요구사항</h3>
+                <ul>
+                    <li>온프레미스 기반 대외 서비스</li>
+                    <li>기존 ex-GPT 스택 최대한 활용</li>
+                    <li>이해관계자별 차별화된 권한</li>
+                    <li>보안 DMZ 구간 활용</li>
+                    <li>데이터 정합성 보장</li>
+                </ul>
+            </div>
+            <div class="requirement-box">
+                <h3>🤔 해결해야 할 질문들</h3>
+                <ul>
+                    <li>어디까지를 DMZ에 노출할 것인가?</li>
+                    <li>어떤 컴포넌트를 외부로 분리할 것인가?</li>
+                    <li>DataStreams 스택을 어떻게 배치할 것인가?</li>
+                    <li>권한 관리를 어떻게 구현할 것인가?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="architecture-options">
+            <h2>🏗️ 3가지 아키텍처 옵션 제안</h2>
+
+            <div class="option recommended">
+                <div class="tier-title">🟢 옵션 1: 권한 기반 단일 시스템 (추천)</div>
+                
+                <div class="stack-diagram">
+                    <h4>Internal Zone (온프레미스)</h4>
+                    <div class="component internal">ex-GPT Core</div>
+                    <div class="component internal">Knowledge Parser</div>
+                    <div class="component internal">Qdrant Vector DB</div>
+                    <div class="component internal">MinIO Storage</div>
+                    <div class="component internal">권한 엔진</div>
+                    
+                    <div class="arrow">⬇️ DMZ Gateway ⬇️</div>
+                    
+                    <h4>DMZ Zone</h4>
+                    <div class="component dmz">API Gateway</div>
+                    <div class="component dmz">인증 서버</div>
+                    <div class="component dmz">로드밸런서</div>
+                </div>
+                
+                <div class="benefits">
+                    <h4>✅ 장점</h4>
+                    <ul>
+                        <li>기존 시스템 100% 활용</li>
+                        <li>단일 데이터 소스로 정합성 보장</li>
+                        <li>최소한의 개발 공수</li>
+                        <li>보안 위험 최소화</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="option hybrid">
+                <div class="tier-title">🟡 옵션 2: 하이브리드 구성</div>
+                
+                <div class="stack-diagram">
+                    <h4>Internal Zone</h4>
+                    <div class="component internal">ex-GPT Core</div>
+                    <div class="component internal">민감 데이터</div>
+                    <div class="component internal">내부 문서</div>
+                    
+                    <div class="arrow">⬇️ 데이터 동기화 ⬇️</div>
+                    
+                    <h4>DMZ Zone</h4>
+                    <div class="component dmz">경량 LLM</div>
+                    <div class="component dmz">필터링된 Vector DB</div>
+                    <div class="component dmz">공개 가능 문서</div>
+                    <div class="component dmz">협력업체 전용 API</div>
+                </div>
+                
+                <div class="challenges">
+                    <h4>⚠️ 과제</h4>
+                    <ul>
+                        <li>실시간 데이터 동기화 복잡성</li>
+                        <li>중복 인프라 관리</li>
+                        <li>데이터 불일치 위험</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="option full-external">
+                <div class="tier-title">🔵 옵션 3: 완전 분리형</div>
+                
+                <div class="stack-diagram">
+                    <h4>External Cloud</h4>
+                    <div class="component external">대국민 서비스</div>
+                    <div class="component external">공개 데이터 전용</div>
+                    <div class="component external">별도 LLM</div>
+                    
+                    <h4>DMZ Zone</h4>
+                    <div class="component dmz">협력업체 서비스</div>
+                    <div class="component dmz">제한된 업무 정보</div>
+                    
+                    <h4>Internal Zone</h4>
+                    <div class="component internal">기존 ex-GPT</div>
+                    <div class="component internal">직원 전용</div>
+                </div>
+                
+                <div class="challenges">
+                    <h4>⚠️ 문제점</h4>
+                    <ul>
+                        <li>3중 시스템 관리 부담</li>
+                        <li>개발 및 운영 비용 급증</li>
+                        <li>정합성 관리 불가능</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="datastreams-stack">
+            <h2>🔧 DataStreams 스택 배치 방안</h2>
+            
+            <div class="highlight">
+                <h3>현재 ex-GPT 구성 요소</h3>
+                <div class="component shared">NeoAli API (8080)</div>
+                <div class="component shared">vLLM Server (8000)</div>
+                <div class="component shared">Embeddings (8100)</div>
+                <div class="component shared">Qdrant (6333)</div>
+                <div class="component shared">MinIO (9090)</div>
+            </div>
+            
+            <div class="tech-considerations">
+                <h3>🎯 부장님 질문에 대한 구체적 답변</h3>
+                
+                <div class="highlight">
+                    <h4>Q: "어디까지를 밖으로 내놔야 되는 건지?"</h4>
+                    <p><strong>A: 권한 기반 단일 시스템 권장</strong></p>
+                    <ul>
+                        <li><strong>내부 유지:</strong> 모든 핵심 컴포넌트 (ex-GPT Core, Vector DB, 파일 저장소)</li>
+                        <li><strong>DMZ 노출:</strong> API Gateway + 인증 서버만</li>
+                        <li><strong>외부 제공:</strong> REST API 엔드포인트만</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight">
+                    <h4>Q: "어떤 부분을 내놓고 어떤 부분을 안 할 것인가?"</h4>
+                    <p><strong>A: 문서별 Hash 기반 권한 제어</strong></p>
+                    <ul>
+                        <li><strong>노출:</strong> 공개 규정, 시공 기준, 협력업체 매뉴얼</li>
+                        <li><strong>비노출:</strong> 개인정보, 내부 전용 문서, 국정감사 자료</li>
+                        <li><strong>제어 방식:</strong> 문서별 부서 권한 + 사용자 그룹 매핑</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight">
+                    <h4>Q: "기존 스택으로 가능한가?"</h4>
+                    <p><strong>A: 예, 권한 관리 레이어만 추가</strong></p>
+                    <ul>
+                        <li><strong>필요한 추가 개발:</strong> 권한 엔진, API 게이트웨이</li>
+                        <li><strong>기존 활용:</strong> ex-GPT, DataStreams Parser, Vector DB</li>
+                        <li><strong>예상 공수:</strong> 2-3개월 (새로 구축 대비 1/3 수준)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="benefits">
+            <h2>🎯 추천 방안: 옵션 1 구현 상세</h2>
+            
+            <div class="stack-diagram">
+                <div class="tier-title">구체적 구현 방법</div>
+                
+                <h4>1. 권한 엔진 구현</h4>
+                <div class="component shared">문서별 Hash 기반 권한 테이블</div>
+                <div class="component shared">부서별 권한 매트릭스</div>
+                <div class="component shared">사용자 그룹 관리</div>
+                
+                <h4>2. API Gateway 설계</h4>
+                <div class="component dmz">JWT 토큰 기반 인증</div>
+                <div class="component dmz">요청별 권한 검증</div>
+                <div class="component dmz">응답 필터링</div>
+                
+                <h4>3. DataStreams 기능 활용</h4>
+                <div class="component internal">Knowledge Parser (도메인별 특화)</div>
+                <div class="component internal">개인정보 자동 검출/마스킹</div>
+                <div class="component internal">휴먼-인-더-루프 검증</div>
+            </div>
+        </div>
+
+        <div class="highlight">
+            <h2>📋 구현 로드맵</h2>
+            <ul>
+                <li><strong>1개월:</strong> 권한 엔진 및 API Gateway 개발</li>
+                <li><strong>2개월:</strong> 협력업체 대상 DMZ 서비스 시범 운영</li>
+                <li><strong>3개월:</strong> 대국민 서비스용 공개 데이터 분류 및 확장</li>
+                <li><strong>지속:</strong> 권한 관리 도구 고도화 및 모니터링 강화</li>
+            </ul>
+            
+            <p><strong>핵심: 기존 ex-GPT 시스템을 최대한 활용하면서, 권한 관리만으로 대외 서비스를 안전하게 제공</strong></p>
+        </div>
+    </div>
+</body>
+</html>
