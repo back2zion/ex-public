@@ -245,7 +245,7 @@
         <div class="architecture-options">
             <h2>🏗️ 3가지 아키텍처 옵션 제안</h2>
 
-            <div class="option recommended">
+            <div class="option">
                 <div class="tier-title">🟢 옵션 1: 권한 기반 단일 시스템</div>
                 
                 <div class="stack-diagram">
@@ -271,6 +271,15 @@
                         <li>단일 데이터 소스로 정합성 보장</li>
                         <li>최소한의 개발 공수</li>
                         <li>보안 위험 최소화</li>
+                    </ul>
+                </div>
+                
+                <div class="challenges">
+                    <h4>⚠️ 단점</h4>
+                    <ul>
+                        <li>모든 트래픽이 내부 시스템 집중</li>
+                        <li>대국민 서비스 확장성 제한</li>
+                        <li>권한 관리 복잡도 증가</li>
                     </ul>
                 </div>
             </div>
@@ -303,11 +312,11 @@
                 </div>
             </div>
 
-            <div class="option full-external">
+            <div class="option recommended">
                 <div class="tier-title">🔵 옵션 3: 완전 분리형 (추천)</div>
                 
                 <div class="stack-diagram">
-                    <h4>External Zone</h4>
+                    <h4>External Cloud</h4>
                     <div class="component external">대국민 서비스</div>
                     <div class="component external">공개 데이터 전용</div>
                     <div class="component external">별도 LLM</div>
@@ -321,12 +330,23 @@
                     <div class="component internal">직원 전용</div>
                 </div>
                 
-                <div class="challenges">
-                    <h4>⚠️ 문제점</h4>
+                <div class="benefits">
+                    <h4>✅ 장점</h4>
                     <ul>
-                        <li>3중 시스템 관리 부담</li>
-                        <li>개발 및 운영 비용 급증</li>
-                        <li>정합성 관리 복잡</li>
+                        <li>각 사용자 그룹별 최적화된 성능</li>
+                        <li>보안 위험 완전 분리</li>
+                        <li>대국민 서비스 무제한 확장 가능</li>
+                        <li>장애 발생 시 상호 영향 없음</li>
+                        <li>각 영역별 독립적 개발 및 운영</li>
+                    </ul>
+                </div>
+                
+                <div class="challenges">
+                    <h4>⚠️ 과제</h4>
+                    <ul>
+                        <li>3중 시스템 개발 및 관리 부담</li>
+                        <li>데이터 동기화 및 정합성 관리</li>
+                        <li>초기 구축 비용 증가</li>
                     </ul>
                 </div>
             </div>
@@ -337,7 +357,7 @@
             
             <div class="highlight">
                 <h3>현재 ex-GPT 구성 요소</h3>
-                <div class="component shared">Datastreams API (8080)</div>
+                <div class="component shared">NeoAli API (8080)</div>
                 <div class="component shared">vLLM Server (8000)</div>
                 <div class="component shared">Embeddings (8100)</div>
                 <div class="component shared">Qdrant (6333)</div>
@@ -345,73 +365,74 @@
             </div>
             
             <div class="tech-considerations">
-                <h3>🎯 부장님 질문에 대한 구체적 답변</h3>
+                <h3>🎯 사업수행에 있어서의 여러 질문에 대한 구체적 답변</h3>
                 
                 <div class="highlight">
                     <h4>Q: "어디까지를 밖으로 내놔야 되는 건지?"</h4>
-                    <p><strong>A: 권한 기반 단일 시스템 권장</strong></p>
+                    <p><strong>A: 완전 분리형 아키텍처 권장</strong></p>
                     <ul>
-                        <li><strong>내부 유지:</strong> 모든 핵심 컴포넌트 (ex-GPT Core, Vector DB, 파일 저장소)</li>
-                        <li><strong>DMZ 노출:</strong> API Gateway + 인증 서버만</li>
-                        <li><strong>외부 제공:</strong> REST API 엔드포인트만</li>
+                        <li><strong>External Zone:</strong> 공개 가능한 모든 정보 (교통정보, 통행료, 민원 안내)</li>
+                        <li><strong>DMZ Zone:</strong> 협력업체 전용 정보 (시공 기준, 안전 규정)</li>
+                        <li><strong>Internal Zone:</strong> 내부 전용 정보 (국정감사, R&D, 개인정보)</li>
                     </ul>
                 </div>
                 
                 <div class="highlight">
                     <h4>Q: "어떤 부분을 내놓고 어떤 부분을 안 할 것인가?"</h4>
-                    <p><strong>A: 문서별 Hash 기반 권한 제어</strong></p>
+                    <p><strong>A: 영역별 완전 분리 운영</strong></p>
                     <ul>
-                        <li><strong>노출:</strong> 공개 규정, 시공 기준, 협력업체 매뉴얼</li>
-                        <li><strong>비노출:</strong> 개인정보, 내부 전용 문서, 국정감사 자료</li>
-                        <li><strong>제어 방식:</strong> 문서별 부서 권한 + 사용자 그룹 매핑</li>
+                        <li><strong>대국민 공개:</strong> 도로 정보, 휴게소, 하이패스, 일반 민원</li>
+                        <li><strong>협력업체 제한 공개:</strong> 건설 기준, 시공 가이드, 계약 정보</li>
+                        <li><strong>완전 비공개:</strong> 개인정보, 보안 문서, 내부 검토 자료</li>
                     </ul>
                 </div>
                 
                 <div class="highlight">
                     <h4>Q: "기존 스택으로 가능한가?"</h4>
-                    <p><strong>A: 예, 권한 관리 레이어만 추가</strong></p>
+                    <p><strong>A: 기존 시스템 + 2개 추가 구축</strong></p>
                     <ul>
-                        <li><strong>필요한 추가 개발:</strong> 권한 엔진, API 게이트웨이</li>
-                        <li><strong>기존 활용:</strong> ex-GPT, DataStreams Parser, Vector DB</li>
-                        <li><strong>예상 공수:</strong> 2-3개월 (새로 구축 대비 1/3 수준)</li>
+                        <li><strong>Internal Zone:</strong> 기존 ex-GPT 시스템 그대로 활용</li>
+                        <li><strong>DMZ Zone:</strong> 중간급 LLM + 선별된 데이터</li>
+                        <li><strong>External Zone:</strong> 경량 LLM + 공개 데이터</li>
+                        <li><strong>예상 공수:</strong> 4-6개월 (3개 시스템 병렬 구축)</li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <div class="benefits">
-            <h2>🎯 추천 방안: 옵션 1 구현 상세</h2>
+            <h2>🎯 추천 방안: 옵션 3 구현 상세</h2>
             
             <div class="stack-diagram">
-                <div class="tier-title">구체적 구현 방법</div>
+                <div class="tier-title">완전 분리형 구현 방법</div>
                 
-                <h4>1. 권한 엔진 구현</h4>
-                <div class="component shared">문서별 Hash 기반 권한 테이블</div>
-                <div class="component shared">부서별 권한 매트릭스</div>
-                <div class="component shared">사용자 그룹 관리</div>
+                <h4>1. External Zone (대국민 서비스)</h4>
+                <div class="component external">경량 LLM 서버</div>
+                <div class="component external">공개 데이터 전용 Vector DB</div>
+                <div class="component external">웹/모바일 인터페이스</div>
                 
-                <h4>2. API Gateway 설계</h4>
-                <div class="component dmz">JWT 토큰 기반 인증</div>
-                <div class="component dmz">요청별 권한 검증</div>
-                <div class="component dmz">응답 필터링</div>
+                <h4>2. DMZ Zone (협력업체 서비스)</h4>
+                <div class="component dmz">중간급 LLM + 업무 데이터</div>
+                <div class="component dmz">계약업체별 권한 관리</div>
+                <div class="component dmz">VPN 기반 접근 제어</div>
                 
-                <h4>3. DataStreams 기능 활용</h4>
-                <div class="component internal">Knowledge Parser (도메인별 특화)</div>
-                <div class="component internal">개인정보 자동 검출/마스킹</div>
-                <div class="component internal">휴먼-인-더-루프 검증</div>
+                <h4>3. Internal Zone (직원 전용)</h4>
+                <div class="component internal">기존 ex-GPT 풀스펙</div>
+                <div class="component internal">DataStreams 전체 기능</div>
+                <div class="component internal">국정감사/R&D 데이터</div>
             </div>
         </div>
 
         <div class="highlight">
             <h2>📋 구현 로드맵</h2>
             <ul>
-                <li><strong>1개월:</strong> 권한 엔진 및 API Gateway 개발</li>
-                <li><strong>2개월:</strong> 협력업체 대상 DMZ 서비스 시범 운영</li>
-                <li><strong>3개월:</strong> 대국민 서비스용 공개 데이터 분류 및 확장</li>
-                <li><strong>지속:</strong> 권한 관리 도구 고도화 및 모니터링 강화</li>
+                <li><strong>1-2개월:</strong> External Zone 대국민 서비스 구축 (경량 LLM + 공개 데이터)</li>
+                <li><strong>2-3개월:</strong> DMZ Zone 협력업체 서비스 구축 (중간급 LLM + 업무 데이터)</li>
+                <li><strong>3-4개월:</strong> 데이터 동기화 시스템 및 통합 관리 도구 개발</li>
+                <li><strong>지속:</strong> 각 영역별 독립적 고도화 및 성능 최적화</li>
             </ul>
             
-            <p><strong>핵심: 기존 ex-GPT 시스템을 최대한 활용하면서, 권한 관리만으로 대외 서비스를 안전하게 제공</strong></p>
+            <p><strong>핵심: 사용자 그룹별 완전 분리로 최적의 성능과 보안을 동시에 확보하되, 데이터 정합성은 중앙화된 마스터 시스템으로 관리</strong></p>
         </div>
     </div>
 </body>
